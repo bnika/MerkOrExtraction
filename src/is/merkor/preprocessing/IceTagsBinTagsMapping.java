@@ -1,196 +1,202 @@
 package is.merkor.preprocessing;
 
-	import is.merkor.util.FileCommunicatorReading;
 import is.merkor.util.FileCommunicatorWriting;
 import is.merkor.util.ProcessingClass;
 
 import java.io.BufferedWriter;
-	import java.io.IOException;
-	import java.util.ArrayList;
-	import java.util.HashMap;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-	import java.util.regex.Matcher;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-	/**
-	 * This class includes mappings between icenlp tags and bin tags (greiningarstrengur), 
-	 * as well as a set of rules for non valid words.
-	 * Creates a mapping between the icenlp tags of valid words and the corresponding bin tags
-	 * for nouns, verbs or adjectives.
-	 * Two kind of outputs are created: one for the valid words with mappings into a SQL-file
-	 * and one for non valid words into a .txt file.
-	 *  
-	 * @author Anna B. Nikulasdottir
-	 *
-	 */
-	public class IceTagsBinTagsMapping extends ProcessingClass {
-		
-		private final int MAX_LIST_SIZE = 100000; //max wordlist size before content is written out and list cleared
-		
-		private String currentWord;
-		private String currentTag;
-		
-		private Map<String, String> binTagsMap;
-		
-		private List<String> tagRegExList = new ArrayList<String>();
-		private List<WordIceBin> wordList = new ArrayList<WordIceBin>();
-		private List<String> nonValidWords = new ArrayList<String>();
-		private String wordclass;
-		
-		/**
-		 * Constructor. Initializes a map with icetagger tags and the corresponding bin tags,
-		 * and initializes a list with icetagger tags regular expressions.
-		 */
-		public IceTagsBinTagsMapping(String wordclass) {
-			if(wordclass.matches("nouns?")) {
-				this.wordclass = "nouns";
-				this.binTagsMap = IceTagsBinTagsMaps.binTagsMap_nouns;
-				//initializeNounTagsMap();
-			}
-			else if(wordclass.matches("verbs?")) {
-				this.wordclass = "s_verbs";
-				this.binTagsMap = IceTagsBinTagsMaps.binTagsMap_verbs;
-				//initializeVerbTagsMap();
-			}
-			else if(wordclass.matches("adjectives?")) {
-				this.wordclass = "l_adjectives";
-				this.binTagsMap = IceTagsBinTagsMaps.binTagsMap_adj;
-				//initializeAdjTagsMap();
-			}
-			else {
-				System.out.println("Wordclass not valid! Please call the IceTagsBinTagsMapping constructor " +
-						"with \"noun\", \"verb\" or \"adjective\"");
-				System.exit(-1);
-			}
-		 initializeTagRegEx();
-		}
-		
-		public List<WordIceBin> getWordList() {
-			return wordList;
-		}
-		public List<String> getNonWordList() {
-			return nonValidWords;
-		}
-		/*
-		 * Initializes a list with regular expressions representing
-		 * all possible combinations of an icetagger tag.
-		 */
-		private void initializeTagRegEx() {
-			tagRegExList.add("n[kvhx][ef][noþe]g?");
-		    tagRegExList.add("n[kvhx][ef][noþe][-g][mös]");
-		    tagRegExList.add("l[kvh][ef][noþe][svo][fme]");
-		    tagRegExList.add("f[abeopst][kvh12][ef][noþe]");
-		    tagRegExList.add("g[kvh][ef][noþe]");
-		    tagRegExList.add("tf[kvh12][ef][noþe]");
-		    tagRegExList.add("t[aop]");
-		    tagRegExList.add("s[nbfvsl][gm][123][ef][nþ]");
-		    tagRegExList.add("sþ[gm][kvh][ef][no]");
-		    tagRegExList.add("s[lns][gm]");
-		    tagRegExList.add("a[me]?[auoþe]");
-		    tagRegExList.add("c[nt]?");
-		    tagRegExList.add("e");
-		    tagRegExList.add("x");
+/**
+ * This class includes mappings between icenlp tags and bin tags (greiningarstrengur), 
+ * as well as a set of rules for non valid words.
+ * Creates a mapping between the icenlp tags of valid words and the corresponding bin tags
+ * for nouns, verbs or adjectives.
+ * Two kind of outputs are created: one for the valid words with mappings into a SQL-file
+ * and one for non valid words into a .txt file.
+ *  
+ * @author Anna B. Nikulasdottir
+ * @version 0.8
+ */
 
-		}
+public class IceTagsBinTagsMapping extends ProcessingClass {
 		
-		/**
-		 * Connects an icetagger tag with the corresponding bin tag ('greiningarstrengur').
-		 * First checks if <code>token</code> is an icetagger tag, if yes, and if <code>word</code>
-		 * is not <code>null</code>, writes the word, the icetagger tag and the corresponding
-		 * bin tag into a SQL-file. If <code>token</code> is not an icetagger tag, initializes
-		 * <code>word</code> with <code>token</code> and the next incoming token will
-		 * be checked, if it is an icetagger tag.
-		 * After writing a word-tag pair with the corresponding bin tag into file, <code>word</code>
-		 * and <code>tag</code> are set to <code>null</code>
-		 * 
-		 * @param token either a word or an icetagger tag
-		 */
-		public void process(String token) {
-			if(isTag(token))
-				currentTag = token;
-			else {
-				currentWord = token;
-				return;
-			}
-			
-			if(null != currentWord) {
-				if(isValidWordclass(currentTag)) { 
-					//writeToSQLFile(word, tag);
-					if (isValid(currentWord)) {
-						String binTag = getBinTag(currentTag);
-						wordList.add(new WordIceBin(currentWord, currentTag, binTag));
-					}
-					else
-						nonValidWords.add(currentWord);
+	private final int MAX_LIST_SIZE = 100000; //max wordlist size before content is written out and list cleared
+	
+	private String currentWord;
+	private String currentTag;
+	
+	private Map<String, String> binTagsMap;
+	
+	private List<String> tagRegExList = new ArrayList<String>();
+	private List<WordIceBin> wordList = new ArrayList<WordIceBin>();
+	private List<String> nonValidWords = new ArrayList<String>();
+	private String wordclass;
+		
+	/**
+	 * Constructor. Initializes a map with icetagger tags and the corresponding bin tags,
+	 * and initializes a list with icetagger tags regular expressions.
+	 */
+	public IceTagsBinTagsMapping(String wordclass) {
+		if(wordclass.matches("nouns?")) {
+			this.wordclass = "nouns";
+			this.binTagsMap = IceTagsBinTagsMaps.binTagsMap_nouns;
+		}
+		else if(wordclass.matches("verbs?")) {
+			this.wordclass = "s_verbs";
+			this.binTagsMap = IceTagsBinTagsMaps.binTagsMap_verbs;
+		}
+		else if(wordclass.matches("adjectives?")) {
+			this.wordclass = "l_adjectives";
+			this.binTagsMap = IceTagsBinTagsMaps.binTagsMap_adj;
+		}
+		else {
+			System.out.println("Wordclass not valid! Please call the IceTagsBinTagsMapping constructor " +
+					"with \"noun\", \"verb\" or \"adjective\"");
+			System.exit(-1);
+		}
+		initializeTagRegEx();
+	}
+	
+	public List<WordIceBin> getWordList() {
+		return wordList;
+	}
+	public List<String> getNonWordList() {
+		return nonValidWords;
+	}
+	/*
+	 * Initializes a list with regular expressions representing
+	 * all possible combinations of an icetagger tag.
+	 */
+	private void initializeTagRegEx() {
+		tagRegExList.add("n[kvhx][ef][noþe]g?");
+	    tagRegExList.add("n[kvhx][ef][noþe][-g][mös]");
+	    tagRegExList.add("l[kvh][ef][noþe][svo][fme]");
+	    tagRegExList.add("f[abeopst][kvh12][ef][noþe]");
+	    tagRegExList.add("g[kvh][ef][noþe]");
+	    tagRegExList.add("tf[kvh12][ef][noþe]");
+	    tagRegExList.add("t[aop]");
+	    tagRegExList.add("s[nbfvsl][gm][123][ef][nþ]");
+	    tagRegExList.add("sþ[gm][kvh][ef][no]");
+	    tagRegExList.add("s[lns][gm]");
+	    tagRegExList.add("a[me]?[auoþe]");
+	    tagRegExList.add("c[nt]?");
+	    tagRegExList.add("e");
+	    tagRegExList.add("x");
+	
+	}
+	/**
+	 * Connects an icetagger tag with the corresponding bin tag ('greiningarstrengur').
+	 * First checks if <code>token</code> is an icetagger tag, if yes, and if <code>word</code>
+	 * is not <code>null</code>, writes the word, the icetagger tag and the corresponding
+	 * bin tag into a SQL-file. If <code>token</code> is not an icetagger tag, initializes
+	 * <code>word</code> with <code>token</code> and the next incoming token will
+	 * be checked, if it is an icetagger tag.
+	 * After writing a word-tag pair with the corresponding bin tag into file, <code>word</code>
+	 * and <code>tag</code> are set to <code>null</code>
+	 * 
+	 * @param token either a word or an icetagger tag
+	 */
+	public void process(String token) {
+		if (isTag(token))
+			currentTag = token;
+		else {
+			currentWord = token;
+			return;
+		}
+		if (null != currentWord) {
+			if(isValidWordclass(currentTag)) { 
+				if (isValid(currentWord)) {
+					String binTag = getBinTag(currentTag);
+					wordList.add(new WordIceBin(currentWord, currentTag, binTag));
 				}
-				currentWord = null;
-				currentTag = null;
+				else
+					nonValidWords.add(currentWord);
 			}
-			
-			writeListsIfFull();
-			
+			currentWord = null;
+			currentTag = null;
 		}
+		writeListsIfFull();
+	}
 		
-		/**
-		 * Writes the current content in wordlist and nonValidWord list and clears.
-		 */
-		public void finishProcess () {
+	/**
+	 * Writes the current content in wordlist and nonValidWord list and clears.
+	 */
+	public void finishProcess () {
+		writeToSQLFile();
+		writeNonValidWords();
+		wordList.clear();
+		nonValidWords.clear();
+	}
+	
+	private void writeListsIfFull() {
+		if (wordList.size() >= MAX_LIST_SIZE) {
 			writeToSQLFile();
-			writeNonValidWords();
 			wordList.clear();
+		}
+		if (nonValidWords.size() >= MAX_LIST_SIZE) {
+			writeNonValidWords();
 			nonValidWords.clear();
 		}
-		private void writeListsIfFull() {
-			if (wordList.size() >= MAX_LIST_SIZE) {
-				writeToSQLFile();
-				wordList.clear();
-			}
-			if (nonValidWords.size() >= MAX_LIST_SIZE) {
-				writeNonValidWords();
-				nonValidWords.clear();
-			}
+	}
+	private boolean isTag(String str) {
+		for (String tag : tagRegExList) {
+			if(str.matches(tag))
+				return true;
 		}
-		private boolean isTag(String str) {
-			for (String tag : tagRegExList) {
-				if(str.matches(tag))
-					return true;
-			}
-			return false;
-		}
+		return false;
+	}
+	// does the tag match the current wordclass?
+	private boolean isValidWordclass(String tag) {
+		return (tag.charAt(0) == wordclass.charAt(0));
+	}
 		
-		private boolean isValidWordclass(String tag) {
-			return (tag.charAt(0) == wordclass.charAt(0));
-		}
-		
-		public void writeToSQLFile () {
-			System.out.println("\nwriting wordList to wordforms_" + wordclass + ".sql (" + wordList.size() + " items) ...");
+	public void writeToSQLFile () {
+		System.out.println("\nwriting wordList to wordforms_" + wordclass + ".sql (" + wordList.size() + " items) ...");
+		String sep = "', '";
+		try {
+			BufferedWriter out = FileCommunicatorWriting.createWriter("wordforms_" + wordclass + ".sql", true);
 			for (WordIceBin word : wordList) {
-				try {
-					BufferedWriter out = FileCommunicatorWriting.createWriter("wordforms_" + wordclass + ".sql", true);
-					out.write("INSERT INTO wordforms_" + wordclass + " VALUES ('" + word.getWord() + "', '" + word.getIceTag() + "', '" + word.getBinTag() + "');\n");
-					out.close();
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				StringBuilder strBuild = new StringBuilder("INSERT INTO wordforms_");
+				strBuild.append(wordclass);
+				strBuild.append(" VALUES ('");
+				strBuild.append(word.getWord());
+				strBuild.append(sep);
+				strBuild.append(word.getIceTag());
+				strBuild.append(sep);
+				strBuild.append(word.getBinTag());
+				strBuild.append("');\n");
+				out.write(strBuild.toString());
+				//out.write("INSERT INTO wordforms_" + wordclass + " VALUES ('" + word.getWord() + "', '" + word.getIceTag() + "', '" + word.getBinTag() + "');\n");
+				
 			}
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+	}
+	
+	public void writeNonValidWords () {
+		System.out.println("writing non valid words to nonValidWords_" + wordclass + ".txt (" + nonValidWords.size() + " items) ...");
 		
-		public void writeNonValidWords () {
-			System.out.println("writing non valid words to nonValidWords_" + wordclass + ".txt (" + nonValidWords.size() + " items) ...");
+		try {
+			BufferedWriter out = FileCommunicatorWriting.createWriter("nonValidWords_" + wordclass + ".txt", true);
 			for (String word : nonValidWords) {
-				try {
-					BufferedWriter out = FileCommunicatorWriting.createWriter("nonValidWords_" + wordclass + ".txt", true);
-					out.write(word + "\n");
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				out.write(word + "\n");
+				
 			}
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+	}
 		
-	  private boolean isValid(String word) {
+	private boolean isValid (String word) {
+		  
 		if(word.equals("á"))
 			return true;
 		if(word.length() <= 1)
@@ -211,6 +217,7 @@ import java.util.regex.Pattern;
 			return false;
 		if(word.matches("\\S+-\\S{1,2}"))	//has to have more than two letters after an '-'
 			return false;
+		
 		Pattern pat = Pattern.compile("\\S+[^aeiou]([aeiou])(\\1)(?!(\\1))\\S{3,}");	//two vowels are allowed if surrounded by enough other letters
 		Matcher matcher = pat.matcher(word);
 		if(matcher.matches()) {
@@ -238,21 +245,20 @@ import java.util.regex.Pattern;
 	}
 
 	private String getBinTag(String pos) {
-		  String binTag = "";
-		  String iceTag = pos.replaceAll("[hkv]", "x");
-		  if (wordclass.equals("nouns") || wordclass.equals("s_verbs")) {
-			  binTag = binTagsMap.get(iceTag);
-		  }
-		  else if (wordclass.equals("l_adjectives")) {
-			  //for adjectives - bin doesn't include 'indeclineable' (o):
-			  char lastChar = pos.charAt(pos.length() - 1);
-			  iceTag = pos.replaceAll("o([fme])", "s" + lastChar);
-			  binTag = binTagsMap.get(iceTag);
-		  }
-		  if (null == binTag) {
-			  binTag = "";
-		  }
-		  return binTag;
-	  }
-
+	    String binTag = "";
+	    String iceTag = pos.replaceAll("[hkv]", "x");
+	    if (wordclass.equals("nouns") || wordclass.equals("s_verbs")) {
+		    binTag = binTagsMap.get(iceTag);
+	    }
+	    else if (wordclass.equals("l_adjectives")) {
+		    //for adjectives - bin doesn't include 'indeclineable' (o):
+		    char lastChar = pos.charAt(pos.length() - 1);
+		    iceTag = pos.replaceAll("o([fme])", "s" + lastChar);
+		    binTag = binTagsMap.get(iceTag);
+	    }
+	    if (null == binTag) {
+		    binTag = "";
+	    }
+	    return binTag;
+    }
 }

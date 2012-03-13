@@ -14,7 +14,7 @@ Preprocessing steps are included for Icelandic.
 
 Run:
 
-    java -jar MerkorExtraction -bin_mapping -input <input_file_or_directory>
+    java -jar MerkorExtraction.jar -bin_mapping -input <input_file_or_directory>
 
 
 If -input is a directory, all files in that directory will be processed.
@@ -31,7 +31,7 @@ The .sql files contain sql-statements to insert into database. The statements ha
 
    INSERT INTO wordforms\_nouns VALUES ('fólki', 'nheþ', 'ÞGFET')
 
-where the first value is the wordform, the second value the ice-nlp tag and the third one the bin-tag.
+where the first value is the <i>wordform</i>, the second value the <i>ice-nlp tag</i> and the third one the <i>bin-tag</i>.
 
 During the process above, all so called non valid words tagged as nouns, adjectives or verbs are sorted out
 and written to file 'nonValidWords\_wordclass.txt'.
@@ -44,6 +44,6 @@ Example:
     floor
     ...
 
-<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 19 minutes</i>
+<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 6:14 minutes</i>
 
 
