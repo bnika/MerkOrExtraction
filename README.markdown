@@ -44,6 +44,6 @@ Example:
     floor
     ...
 
-<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 19 minutes</i>
+<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 6:14 minutes</i>
 
 
