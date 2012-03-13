@@ -6,7 +6,7 @@ Preprocessing steps are included for Icelandic.
 
 ## Preprocessing
 
-#### Pre-requisites: 
+#### Prerequisites: 
 1. an <i>IceNLP IceTagger</i> tagged text (or texts) (<http://sourceforge.net/projects/icenlp/>).
 2. <i>Beygingarlýsing íslensks nútímamáls (BÍN)</i> in a PostgreSQL database (<http://bin.arnastofnun.is>).
 
