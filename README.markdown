@@ -44,6 +44,17 @@ Example:
     floor
     ...
 
-<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 6:14 minutes</i>
+<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 6:14 minutes</i>.
+
+Now perform steps 1 and 2 in the database construction, see <i>data/merkorDBconstruction.sql</i>.
+
+Populate database from file:
+
+Run:
+    java -jar MerkorExtraction.jar -fill\_db -db\_name databasename -db\_conn databaseconnection -password yourpassword -input sql-file
+
+You can also set the default db-connection in class is.merkor.util.database.DBConnection.java
+
+<i>Processing time on MacBook Pro [and some details...] for 89 MB input file: 13:22 minutes</i>.
 
 

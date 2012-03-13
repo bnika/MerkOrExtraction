@@ -1,3 +1,4 @@
+package preprocessing;
 
 import static org.junit.Assert.*;
 import is.merkor.preprocessing.IceTagsBinTagsMapping;

@@ -10,6 +10,7 @@ package is.merkor.cli;
 
 import is.merkor.preprocessing.IceTagsBinTagsMapping;
 import is.merkor.util.MerkorTokenReader;
+import is.merkor.util.database.DBPopulation;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -55,8 +56,8 @@ public class Main {
 		if (cmdLine.hasOption("input")) {
 			input = cmdLine.getOptionValue("input");
 			
-			results.add("no message");
 		}
+		// bin - icenlp tag mapping
 		if (cmdLine.hasOption("bin_mapping")) {
 			if (null == input)
 				results.add("no input given for bin_mapping!");
@@ -88,6 +89,22 @@ public class Main {
 				double elapsedTime = (double)(System.nanoTime() - start) / 1000000000.0;
 				System.out.println("Execution time: " + elapsedTime + " seconds!");
 			}
+		}
+		// db-population
+		if (cmdLine.hasOption("fill_db")) {
+			String conn = cmdLine.getOptionValue("db_conn");
+			String name = cmdLine.getOptionValue("db_name");
+			String password = cmdLine.getOptionValue("password");
+			
+			if (null == conn || null == name || null == password || null == input) {
+				results.add("connection, name, password and inputfile needed for option -fill_db!");
+				return results;
+			}
+			long start = System.nanoTime();
+			DBPopulation db_pop = new DBPopulation();
+			db_pop.populateDBFromFile(conn, name, password, input);
+			double elapsedTime = (double)(System.nanoTime() - start) / 1000000000.0;
+			System.out.println("Execution time: " + elapsedTime + " seconds!");
 		}
 		
 		return results;
