@@ -41,7 +41,14 @@ public class FileCommunicatorWriting {
 		}
 	}
 	
-	public static void writeListAppend(List<String> list, String filename) {
+	/**
+	 * Writes a list of strings to file {@code filename}, appending to the
+	 * file if it exists.
+	 * 
+	 * @param list
+	 * @param filename
+	 */
+	public static void writeListAppend (List<String> list, String filename) {
 		try {
 			BufferedWriter out = createWriter(filename, true);
 			for(String s : list) {
@@ -54,20 +61,30 @@ public class FileCommunicatorWriting {
 		}
 		
 	}
-	public static BufferedWriter createWriter (String filename, boolean append) throws IOException {
-		 return (new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename, append), "UTF8")));
-	}
-	public static void writeBufferToFile(String text, String filename) {
+	
+	public static void writeBufferToFile (StringBuffer text, String filename) {
 		try {
 			BufferedWriter out = createWriter(filename, false);
-			out.write(text);
+			out.write(text.toString());
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 	}
+	public static void writeBufferToFileAppend(StringBuffer text, String filename) {
+		try {
+			BufferedWriter out = createWriter(filename, true);
+			out.write(text.toString());
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public static BufferedWriter createWriter (String filename, boolean append) throws IOException {
+		 return (new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename, append), "UTF8")));
+	}
 	
-
 }
 

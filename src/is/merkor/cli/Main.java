@@ -113,6 +113,7 @@ public class Main {
 	public static void main (String[] args) throws Exception {
 		
 		List<String> results = new ArrayList<String>();
+	
 		PrintStream out = new PrintStream(System.out, true, "UTF-8");
 		
 		CommandLineParser parser = new GnuParser();

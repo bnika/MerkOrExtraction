@@ -56,5 +56,20 @@ Run:
 You can also set the default db-connection in class is.merkor.util.database.DBConnection.java
 
 <i>Processing time on MacBook Pro [and some details...] for 89 MB input file: 13:22 minutes</i>.
+<i>Processing time on MacBook Pro - real data: nouns (4.67GB) - 13h10m; adj (1.22GB) - 2h51m; verbs (3.15GB) - 8h36m</i>
+
+Improvement suggestion: use Postgresql 'COPY' instead of 'INSERT INTO' (see postgresql doc), much faster.
+
+#### Lemmatizing
+
+The MerkorLemmatizer is a standalone application, but also accessible from within MerkOrExtraction as BINLemmatizer.
+
+TODO: define commandline parameters for lemmatizer in MerkOrExtraction.
+
+## Pattern Extraction
+
+If you already have patterns for relation extraction, skip this step!
+
+Define the rules for the extraction of patterns:
 
 

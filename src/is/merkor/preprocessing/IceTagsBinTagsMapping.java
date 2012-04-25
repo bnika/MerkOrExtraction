@@ -1,6 +1,7 @@
 package is.merkor.preprocessing;
 
 import is.merkor.util.FileCommunicatorWriting;
+import is.merkor.util.IcenlpTags;
 import is.merkor.util.ProcessingClass;
 
 import java.io.BufferedWriter;
@@ -32,7 +33,6 @@ public class IceTagsBinTagsMapping extends ProcessingClass {
 	
 	private Map<String, String> binTagsMap;
 	
-	private List<String> tagRegExList = new ArrayList<String>();
 	private List<WordIceBin> wordList = new ArrayList<WordIceBin>();
 	private List<String> nonValidWords = new ArrayList<String>();
 	private String wordclass;
@@ -59,7 +59,6 @@ public class IceTagsBinTagsMapping extends ProcessingClass {
 					"with \"noun\", \"verb\" or \"adjective\"");
 			System.exit(-1);
 		}
-		initializeTagRegEx();
 	}
 	
 	public List<WordIceBin> getWordList() {
@@ -68,27 +67,7 @@ public class IceTagsBinTagsMapping extends ProcessingClass {
 	public List<String> getNonWordList() {
 		return nonValidWords;
 	}
-	/*
-	 * Initializes a list with regular expressions representing
-	 * all possible combinations of an icetagger tag.
-	 */
-	private void initializeTagRegEx() {
-		tagRegExList.add("n[kvhx][ef][noþe]g?");
-	    tagRegExList.add("n[kvhx][ef][noþe][-g][mös]");
-	    tagRegExList.add("l[kvh][ef][noþe][svo][fme]");
-	    tagRegExList.add("f[abeopst][kvh12][ef][noþe]");
-	    tagRegExList.add("g[kvh][ef][noþe]");
-	    tagRegExList.add("tf[kvh12][ef][noþe]");
-	    tagRegExList.add("t[aop]");
-	    tagRegExList.add("s[nbfvsl][gm][123][ef][nþ]");
-	    tagRegExList.add("sþ[gm][kvh][ef][no]");
-	    tagRegExList.add("s[lns][gm]");
-	    tagRegExList.add("a[me]?[auoþe]");
-	    tagRegExList.add("c[nt]?");
-	    tagRegExList.add("e");
-	    tagRegExList.add("x");
 	
-	}
 	/**
 	 * Connects an icetagger tag with the corresponding bin tag ('greiningarstrengur').
 	 * First checks if <code>token</code> is an icetagger tag, if yes, and if <code>word</code>
@@ -102,7 +81,7 @@ public class IceTagsBinTagsMapping extends ProcessingClass {
 	 * @param token either a word or an icetagger tag
 	 */
 	public void process(String token) {
-		if (isTag(token))
+		if (IcenlpTags.isTag(token))
 			currentTag = token;
 		else {
 			currentWord = token;
@@ -142,13 +121,6 @@ public class IceTagsBinTagsMapping extends ProcessingClass {
 			writeNonValidWords();
 			nonValidWords.clear();
 		}
-	}
-	private boolean isTag(String str) {
-		for (String tag : tagRegExList) {
-			if(str.matches(tag))
-				return true;
-		}
-		return false;
 	}
 	// does the tag match the current wordclass?
 	private boolean isValidWordclass(String tag) {
