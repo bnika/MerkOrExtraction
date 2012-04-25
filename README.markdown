@@ -95,10 +95,10 @@ For each extracted pattern an abstract version and the realisation is returned.
 
 Example:
     Input:  ...
-            [SCP að c SCP]
-            [NP markmiðið nheng NP]
-            [PP með aþ [NP komu nveþ sinni feveþ NP] PP]
-            [AdvP hingað aa AdvP]
+            [SCP að c SCP]  
+            [NP markmiðið nheng NP]  
+            [PP með aþ [NP komu nveþ sinni feveþ NP] PP]  
+            [AdvP hingað aa AdvP]  
             ...
 
     Output: [NP nxeng ] [PP með  aþ [NP nxeþ  fexeþ ]] => [NP markmiðið nheng NP] [PP með aþ [NP komu nveþ sinni feveþ NP] PP]
