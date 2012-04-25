@@ -44,8 +44,7 @@ Example:
     floor
     ...
 
-<<<<<<< HEAD
-<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 6:14 minutes</i>.
+<i>Processing time on MacBook Pro for 53.7 MB input file: 6:14 minutes</i>.
 
 Now perform steps 1 and 2 in the database construction, see <i>data/merkorDBconstruction.sql</i>.
 
@@ -56,7 +55,7 @@ Run:
 
 You can also set the default db-connection in class is.merkor.util.database.DBConnection.java
 
-<i>Processing time on MacBook Pro [and some details...] for 89 MB input file: 13:22 minutes</i>.
+<i>Processing time on MacBook Pro for 89 MB input file: 13:22 minutes</i>.
 <i>Processing time on MacBook Pro - real data: nouns (4.67GB) - 13h10m; adj (1.22GB) - 2h51m; verbs (3.15GB) - 8h36m</i>
 
 Improvement suggestion: use Postgresql 'COPY' instead of 'INSERT INTO' (see postgresql doc), much faster.
@@ -65,7 +64,7 @@ Improvement suggestion: use Postgresql 'COPY' instead of 'INSERT INTO' (see post
 
 The MerkorLemmatizer is a standalone application, but also accessible from within MerkOrExtraction as BINLemmatizer.
 
-TODO: define commandline parameters for lemmatizer in MerkOrExtraction.
+TODO: define command line parameters for lemmatizer in MerkOrExtraction.
 
 ## Pattern Extraction
 
@@ -73,7 +72,3 @@ If you already have patterns for relation extraction, skip this step!
 
 Define the rules for the extraction of patterns:
 =======
-<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 6:14 minutes</i>
->>>>>>> cff171aeaa8e1ed01667d2420e30394a7c53d48b
-
-
