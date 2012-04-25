@@ -70,5 +70,38 @@ TODO: define command line parameters for lemmatizer in MerkOrExtraction.
 
 If you already have patterns for relation extraction, skip this step!
 
-Define the rules for the extraction of patterns:
-=======
+#### Define the rules for the extraction of patterns:
+
+One can define various rules for the initial extraction of patterns, based on what kind of relations are to be extracted.
+In the following the rules for the extraction of noun phrases and prepositional phrases are described. The aim is to 
+extract relations between nouns, using enumeration of nouns, genetive constructions, and prepositions, along with relations between
+adjectives and adjectives and nouns.
+Patterns containing verbs are excluded as a method of narrowing down the problem (such patterns would indeed most likely be very useful).
+
+The extraction in MerkOrExtraction is based on the IceNLP tagset. If you want to use MerkOr to extract other kinds of patterns in other format,
+please have a look at the classes is.merkor.patternextraction.PatternExtraction.java and is.merkor.patternextraction.PatternInfo.java.
+Unfortunately many rules are hard coded, so you might even be better off writing your own pattern extraction class if many changes are needed.
+
+Rules:
+
+    Allowed phrases in a pattern:
+        Noun phrase ([NP), a prepositional phrase ([PP), or an adjective phrase ([AP).
+        Conjunctions are allowed, but a pattern may not end with a conjunction phrase ([CC).
+
+    A pattern may not end with a NP or a PP that does not contain a noun.
+    A pattern has to contain at least two nouns, or two adjectives, or one noun and one adjective.
+
+For each extracted pattern an abstract version and the realisation is returned.
+
+Example:
+    Input:  ...
+            [SCP að c SCP]
+            [NP markmiðið nheng NP]
+            [PP með aþ [NP komu nveþ sinni feveþ NP] PP]
+            [AdvP hingað aa AdvP]
+            ...
+
+    Output: [NP nxeng ] [PP með  aþ [NP nxeþ  fexeþ ]] => [NP markmiðið nheng NP] [PP með aþ [NP komu nveþ sinni feveþ NP] PP]
+
+The 'x' in the pattern stands for the gender tag which has been neutralized.
+ 

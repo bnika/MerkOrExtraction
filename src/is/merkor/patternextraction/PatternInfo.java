@@ -5,6 +5,8 @@ package is.merkor.patternextraction;
  * @author anna
  */
 
+import is.merkor.preprocessing.WordIceBin;
+
 import java.util.*;
 
 public class PatternInfo implements Comparable {
@@ -127,6 +129,23 @@ public class PatternInfo implements Comparable {
         return pattern.compareTo(p.getPattern());
     }
     
+    /**
+	 * Returns true if and only if other is a patternInfo and pattern and originalText are equal, false otherwise.
+	 */
+	@Override
+	public boolean equals (Object other) {
+		if (this == other) 
+			return true;
+		if (null == other)
+			return false;
+		
+        if (getClass() != other.getClass()) 
+        	return false;
+
+        final PatternInfo info = (PatternInfo) other;
+
+        return getPattern().equals(info.getPattern()) && getOriginalString().equals(info.getOriginalString());
+	}
     public String toString() {
     	return getPattern() + "\t" + getOriginalString();
     }

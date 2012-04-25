@@ -28,8 +28,8 @@ import java.util.TreeSet;
 
 public class PatternExtraction {
 	
-	private BufferedWriter writer;
 	private Set<String> distinctPatterns;
+	private List<PatternInfo> extractedPatterns;
 	/*
 	 * Hard coded regular expressions and phrase / tag info.
 	 * Replace for another format and or pattern extraction plans!
@@ -47,19 +47,13 @@ public class PatternExtraction {
     private final String nounTag = "n";
     private final String adjTag = "l";
     
-    // The input should be formatted one pharse per line,
+    // The input should be formatted one phrase per line,
     // patternSequence is a sequence of phrase patterns that together build one valid pattern.
     private List<PatternInfo> patternSequence = new ArrayList<PatternInfo>();
     
-    public PatternExtraction (String outfile) {
+    public PatternExtraction () {
     	distinctPatterns = new TreeSet<String>(); // map with freqs?
-    	try {
-    		// overwrite existing file
-    		writer = FileCommunicatorWriting.createWriter(outfile, false); 
-    		writer = FileCommunicatorWriting.createWriter(outfile, true);
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
+    	extractedPatterns = new ArrayList<PatternInfo>();
     }
     /**
      * Extracts valid pattern from {@code line} and adds to
@@ -82,10 +76,20 @@ public class PatternExtraction {
         }
         else {
             testPatternSequence();
-            if (!patternSequence.isEmpty()) 
-                writePatternSequence();
+            if (!patternSequence.isEmpty()) { 
+            	addExtractedPattern();
+            }
             patternSequence.clear();
         }
+    }
+    
+    public List<PatternInfo> getExtractedPatterns() {
+    	return extractedPatterns;
+    }
+    private void addExtractedPattern() {
+    	String pattern = extractCompletePattern();
+    	String text = extractCompleteText();
+    	extractedPatterns.add(new PatternInfo(pattern.trim(), text.trim()));
     }
     // validates a completed pattern sequence -
     // corrects it if it ends with a conjunction, clears if non valid.
@@ -283,27 +287,5 @@ public class PatternExtraction {
     		buffer.append(" ");
     	}
     	return buffer.toString();
-    }
-    private void writePatternSequence () {
-    	String pattern = extractCompletePattern();
-    	String text = extractCompleteText();
-    	distinctPatterns.add(pattern);
-        try {
-        	writer.write(pattern);
-        	writer.write("\t");
-        	writer.write(text);
-        	writer.write("\n");
-        } catch (IOException e) {
-        	
-        }
-    }
-    public void close () {
-    	try {
-    		writer.close();
-    		System.out.println("Distinct patterns: " + distinctPatterns.size());
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-    
+    }    
 }
