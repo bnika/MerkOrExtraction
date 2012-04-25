@@ -6,7 +6,7 @@ Preprocessing steps are included for Icelandic.
 
 ## Preprocessing
 
-#### Pre-requisites: 
+#### Prerequisites: 
 1. an <i>IceNLP IceTagger</i> tagged text (or texts) (<http://sourceforge.net/projects/icenlp/>).
 2. <i>Beygingarlýsing íslensks nútímamáls (BÍN)</i> in a PostgreSQL database (<http://bin.arnastofnun.is>).
 
@@ -44,6 +44,7 @@ Example:
     floor
     ...
 
+<<<<<<< HEAD
 <i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 6:14 minutes</i>.
 
 Now perform steps 1 and 2 in the database construction, see <i>data/merkorDBconstruction.sql</i>.
@@ -71,5 +72,8 @@ TODO: define commandline parameters for lemmatizer in MerkOrExtraction.
 If you already have patterns for relation extraction, skip this step!
 
 Define the rules for the extraction of patterns:
+=======
+<i>Processing time on MacBook Pro [and some details...] for 53.7 MB input file: 6:14 minutes</i>
+>>>>>>> cff171aeaa8e1ed01667d2420e30394a7c53d48b
 
 
