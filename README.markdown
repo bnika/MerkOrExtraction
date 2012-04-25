@@ -72,7 +72,7 @@ If you already have patterns for relation extraction, skip this step!
 
 #### Define the rules for the extraction of patterns:
 
-One can define various rules for the initial extraction of patterns, based on what kind of relations are to be extracted.
+One can define various rules for the initial extraction of patterns, based on what kind of relations are to be extracted later.
 In the following the rules for the extraction of noun phrases and prepositional phrases are described. The aim is to 
 extract relations between nouns, using enumeration of nouns, genetive constructions, and prepositions, along with relations between
 adjectives and adjectives and nouns.
@@ -104,4 +104,12 @@ Example:
     Output: [NP nxeng ] [PP með  aþ [NP nxeþ  fexeþ ]] => [NP markmiðið nheng NP] [PP með aþ [NP komu nveþ sinni feveþ NP] PP]
 
 The 'x' in the pattern stands for the gender tag which has been neutralized.
+
+##### To run the MerkOr pattern extraction as is:
+
+    java -jar MerkorExtraction.jar -extract_patterns -input <inputfile_or_dir> -output <output.csv>
+
+
+
+#### Choose promising patterns (manual work!)
  

@@ -12,10 +12,11 @@ public class DBPopulationTest {
 	public void setUp() throws Exception {
 	}
 
-//	@Test
-//	public void testPopulateDBFromFile() {
+	@Test
+	public void testPopulateDBFromFile() {
+		System.out.println("DBPopulationTest commented out!");
 //		DBPopulation db_pop = new DBPopulation();
 //		db_pop.populateDBFromFile("local", "merkor_lexical_items", "put_your_own_password_here", "release/wordforms_l_adjectives.sql");
-//	}
+	}
 
 }

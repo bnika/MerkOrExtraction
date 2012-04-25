@@ -55,12 +55,13 @@ public class BINLemmatizerTest {
 
 	@Test
 	public void testProcess() {
-		BINLemmatizer lemmatizer = new BINLemmatizer();
+		System.out.println("BINLemmatizerTest commented out!");
+		//BINLemmatizer lemmatizer = new BINLemmatizer();
 		
-		for (String token : testList) {
-			lemmatizer.process(token);
-		}
-		lemmatizer.finishProcess();
+		//for (String token : testList) {
+		//	lemmatizer.process(token);
+		//}
+		//lemmatizer.finishProcess();
 	}
 
 }

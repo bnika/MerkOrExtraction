@@ -86,6 +86,15 @@ public class PatternExtraction {
     public List<PatternInfo> getExtractedPatterns() {
     	return extractedPatterns;
     }
+    public List<String> getExtractedPatternsAsStrings() {
+    	List<String> patterns = new ArrayList<String>();
+    	for (PatternInfo info : extractedPatterns) {
+    		String pattern = info.getPattern();
+    		String text = info.getOriginalString();
+    		patterns.add(pattern + "\t" + text);
+    	}
+    	return patterns;
+    }
     private void addExtractedPattern() {
     	String pattern = extractCompletePattern();
     	String text = extractCompleteText();

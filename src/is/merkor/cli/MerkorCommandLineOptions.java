@@ -24,8 +24,10 @@ public class MerkorCommandLineOptions {
 	private static Option help;
 	private static Option help_h;
 	private static Option bin_mapping;
+	private static Option extract_patterns;
 	
 	private static Option input;
+	private static Option output;
 	private static Option fill_db;
 	private static Option db_conn;
 	private static Option db_name;
@@ -43,7 +45,9 @@ public class MerkorCommandLineOptions {
 		options.addOption(help_h);
 		options.addOption(bin_mapping);
 		options.addOption(input);
+		options.addOption(output);
 		options.addOption(fill_db);
+		options.addOption(extract_patterns);
 		options.addOption(db_conn);
 		options.addOption(db_name);
 		options.addOption(password);
@@ -55,12 +59,17 @@ public class MerkorCommandLineOptions {
 		help_h = new Option("h", "print this message");
 		bin_mapping = new Option("bin_mapping", "call IceTagsBinMapping");
 		fill_db = new Option("fill_db", "populate database from file");
+		extract_patterns = new Option("extract_patterns", "extract np / pp patterns from file");
 	}
 	private static void createArgumentOptions() {
 		input  = OptionBuilder.withArgName("input file or directory")
 			.hasArg()
 			.withDescription("the input file or directory")
 			.create("input");
+		output  = OptionBuilder.withArgName("output file or directory")
+			.hasArg()
+			.withDescription("the output file or directory")
+			.create("output");
 		db_conn = OptionBuilder.withArgName("db connection to use")
 			.hasArg()
 			.withDescription("db connection to use (maybe class DBConnection has to be adjusted!)")

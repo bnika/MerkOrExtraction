@@ -15,9 +15,10 @@ public class MerkorTokenReaderTest {
 
 	@Test
 	public void testReadTokensFromFile() {
-		BINLemmatizer lemmatizer = new BINLemmatizer();
-		MerkorTokenReader reader = new MerkorTokenReader(lemmatizer);
+		System.out.println("MerkorTokenReaderTest commented out!");
+		//BINLemmatizer lemmatizer = new BINLemmatizer();
+		//MerkorTokenReader reader = new MerkorTokenReader(lemmatizer);
 		
-		reader.readTokensFromFile("/Users/anna/EclipseProjects/workspace/MerkOrExtraction/test/util/mogginn_tagged.txt");
+		//reader.readTokensFromFile("/Users/anna/EclipseProjects/workspace/MerkOrExtraction/test/util/mogginn_tagged.txt");
 	}
 }

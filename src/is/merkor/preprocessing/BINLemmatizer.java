@@ -24,7 +24,7 @@ public class BINLemmatizer extends ProcessingClass {
 	private int lemmatized;
 	private HashMap<String, String> wordformLemmaMap;
 	//private String wordformLemmaFilename = "/Users/anna/MERKOR/Data/frequencies/wf_lemmaMap_sorted.csv";
-	private  String wordformLemmaFilename = "/Users/anna/wordform_lemma.csv";
+	private  String wordformLemmaFilename = System.getProperty("user.dir") + "/resources/wordform_lemma.csv";
 	private String outputfile = "lemmatized.txt";
 
 	private String currentWord;

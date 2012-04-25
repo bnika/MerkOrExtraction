@@ -8,7 +8,11 @@
  *******************************************************************************/
 package is.merkor.cli;
 
+import is.merkor.patternextraction.PatternExtraction;
+import is.merkor.patternextraction.PatternInfo;
 import is.merkor.preprocessing.IceTagsBinTagsMapping;
+import is.merkor.util.FileCommunicatorWriting;
+import is.merkor.util.MerkorFile;
 import is.merkor.util.MerkorTokenReader;
 import is.merkor.util.database.DBPopulation;
 
@@ -44,6 +48,7 @@ public class Main {
 	
 	public static List<String> processCommandLine (final CommandLine cmdLine) {
 		String input = null;
+		String output = null;
 		
 		List<String> results = new ArrayList<String>();
 		
@@ -56,6 +61,9 @@ public class Main {
 		if (cmdLine.hasOption("input")) {
 			input = cmdLine.getOptionValue("input");
 			
+		}
+		if (cmdLine.hasOption("output")) {
+			output = cmdLine.getOptionValue("output");
 		}
 		// bin - icenlp tag mapping
 		if (cmdLine.hasOption("bin_mapping")) {
@@ -107,6 +115,44 @@ public class Main {
 			System.out.println("Execution time: " + elapsedTime + " seconds!");
 		}
 		
+		if (cmdLine.hasOption("extract_patterns")) {
+			PatternExtraction extr = new PatternExtraction();
+			List<String> patterns = new ArrayList<String>();
+			try {
+				File inputDir = new File(input);
+				if (inputDir.isDirectory()) {
+					File[] dirs = inputDir.listFiles();
+					for(int i = 0; i < dirs.length; i++) {
+						if(!dirs[i].getName().startsWith(".")) {
+							File[] files = dirs[i].listFiles();
+							for(int j = 0; j < files.length; j++) {
+								System.out.println("file nr. " + j);
+								if(!files[j].getName().startsWith(".")) {
+									MerkorFile current = new MerkorFile(files[j].getAbsolutePath());
+									for(String line : current) {
+										extr.processLine(line);
+										patterns = extr.getExtractedPatternsAsStrings();
+									}
+								}
+							}
+						}
+					}	
+				}
+				else {
+					MerkorFile file = new MerkorFile(input);
+					for (String line : file) {
+						extr.processLine(line);
+						patterns = extr.getExtractedPatternsAsStrings();
+					}
+					
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			FileCommunicatorWriting.writeListNonAppend(output, patterns);
+		}
+		
 		return results;
 	}
 	
@@ -121,19 +167,19 @@ public class Main {
 	      
 	    	MerkorCommandLineOptions.createOptions();
 	    	results = processCommandLine(parser.parse(MerkorCommandLineOptions.options, args));
-	    	out.print("\n");
-	    	for (String str : results) {
-	    		if(!str.equals("no message"))
-	    			out.println(str);
-			}
-	    	out.print("\n");
-			if (results.isEmpty()) {	
-				out.println("nothing found for parameters: ");
-				for (int i = 0; i < args.length; i++)
-					out.println("\t" + args[i]);
-				out.println("for help type: -help or see README.markdown");
-				out.print("\n");
-			}
+//	    	out.print("\n");
+//	    	for (String str : results) {
+//	    		if(!str.equals("no message"))
+//	    			out.println(str);
+//			}
+//	    	out.print("\n");
+//			if (results.isEmpty()) {	
+//				out.println("nothing found for parameters: ");
+//				for (int i = 0; i < args.length; i++)
+//					out.println("\t" + args[i]);
+//				out.println("for help type: -help or see README.markdown");
+//				out.print("\n");
+//			}
 	    }
 	    catch(ParseException e) {
 	        System.err.println("Parsing failed.  Reason: " + e.getMessage());
