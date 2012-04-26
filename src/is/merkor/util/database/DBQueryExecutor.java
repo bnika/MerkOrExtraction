@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DBQueryExecutor {
 	private DBConnection dbConnection;
@@ -109,4 +111,104 @@ public class DBQueryExecutor {
 		}
 		
 	}
+	
+	// Code from classes used in the pattern verification tool - should be changed to Hibernate!!
+	
+	/**
+     * Gets all lemmata with ids from the icedict table
+     * 
+     * @return a List of Associations (lemma=lemmaid)
+     */
+    public Map select() {
+        Map<String, Integer> patMap = new HashMap<String, Integer>();
+        ResultSet res = selectFromDB("select * from patterns");
+        try {
+            if(res != null) {
+                if (res.next()) {
+                    String pat = res.getString("pattern");
+                    if (patMap.containsKey(pat)) {
+                        patMap.put(pat, patMap.get(pat) + 1);
+                    }
+                    else
+                        patMap.put(pat, 1);
+                }
+                res.close();
+             }
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        } 
+        return patMap;
+        
+    }
+
+    public int selectNumber(int nr) {
+        int cnt = 0;
+        ResultSet res = selectFromDB("select * from patterns where number = " + nr);
+        try {
+            if(res != null) {
+                while (res.next()) {
+                    cnt++;
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return cnt;
+    }
+
+    public void update(String item, String column, String value) {
+        
+        
+        ResultSet res = selectFromDB("select * from patterns where pattern = '" + item + "'");
+        try {
+            if(res != null) {
+                while (res.next()) {
+                    System.out.println(item + " found!");
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        try {
+            sql.execute("UPDATE patterns SET relation  = '" + value + "' WHERE pattern = '" + item + "'");
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+    /**
+     * Gets the row from the database with the lemmaid <c>id</c>
+     * 
+     * @param id the lemmaid to search for
+     * @return a ResultSet with the row including <c>id</c>, <c>null</c> if 
+     * selection is not successful
+     */
+    public ResultSet selectWithID(String id) {
+        return selectFromDB("select * from icedict where lemmaid = '" + id + "'");
+    }
+    public ResultSet selectWithLemma(String lemma) {
+        return selectFromDB("select * from icedict where lemma = '" + lemma + "'");
+    }
+    /**
+     * selects rows from the database with <c>statement</c>
+     * 
+     * @param statement an sql statement to be executed
+     * @return the <c>ResultSet</c> resulting from the execution of <c>statement</c>,
+     * <c>null</c> if selection is not successful
+     */
+    public ResultSet selectFromDB(String statement) {
+          
+        try {
+            ResultSet results = sql.executeQuery(statement);
+            return results;
+            
+        } catch (SQLException e) {
+                System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public ResultSet selectAllWithRelation() {
+        return selectFromDB("SELECT * FROM patterns WHERE relation != 'no relation' ORDER BY number DESC");
+    }
 }

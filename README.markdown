@@ -93,13 +93,13 @@ Rules:
 
 For each extracted pattern an abstract version and the realisation is returned.
 
-Example:
-    Input:  ...
+Example:  
+    Input:  ...  
             [SCP að c SCP]  
             [NP markmiðið nheng NP]  
             [PP með aþ [NP komu nveþ sinni feveþ NP] PP]  
             [AdvP hingað aa AdvP]  
-            ...
+            ...  
 
     Output: [NP nxeng ] [PP með  aþ [NP nxeþ  fexeþ ]] => [NP markmiðið nheng NP] [PP með aþ [NP komu nveþ sinni feveþ NP] PP]
 
@@ -109,7 +109,20 @@ The 'x' in the pattern stands for the gender tag which has been neutralized.
 
     java -jar MerkorExtraction.jar -extract_patterns -input <inputfile_or_dir> -output <output.csv>
 
+#### Patterns to database
 
+The patterns should be written to a database of the form:
+
+    Table pattern:  
+    id (pk) - pattern - nr_of_occurrences - relation  
+    Table pattern_realisation:  
+    id (pk) - pattern_id (fk) - text  
+
+In the present work there is only one db-table, storing all pattern realisation as an array of texts with the respective pattern.
+This has to be re-organized, as well as the classes (in pckg is.merkor.patternextraction.patterns_to_db) that write the patterns into the db have to be completely rewritten.
 
 #### Choose promising patterns (manual work!)
- 
+
+Having all patterns with their realisations in a database, the 'PatternVerificationTool' can be used to quickly scanning over the patterns with their realisations to asset if they are likely to represent a relation. To have a look at this run is.merkor.patternextraction.VerificationFrameTabbed.java.
+
+After this work one can extract all classified patterns for further processing. For MerkOr all patterns occurring at least 10 times in the corpus (about 5300 patterns) were manually scanned, resulting in about 2300 potentially useful patterns.
