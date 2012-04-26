@@ -126,3 +126,6 @@ This has to be re-organized, as well as the classes (in pckg is.merkor.patternex
 Having all patterns with their realisations in a database, the 'PatternVerificationTool' can be used to quickly scanning over the patterns with their realisations to asset if they are likely to represent a relation. To have a look at this run is.merkor.patternextraction.VerificationFrameTabbed.java.
 
 After this work one can extract all classified patterns for further processing. For MerkOr all patterns occurring at least 10 times in the corpus (about 5300 patterns) were manually scanned, resulting in about 2300 potentially useful patterns.
+
+#### Merging patterns - edit distance
+
