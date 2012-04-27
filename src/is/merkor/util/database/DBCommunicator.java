@@ -14,11 +14,14 @@ import java.sql.*;
  */
 
 public class DBCommunicator {
-	
-	    //DBSelection selector = new DBSelection();
+		DBQueryExecutor selector;
+		List<String> displayedPatterns; 
+	    
 		// Set your own db-name and password!
-		DBQueryExecutor selector = new DBQueryExecutor("<db-name>", "<password>");
-	    List<String> displayedPatterns = new ArrayList<String>();
+		public DBCommunicator (String dbName, String password) {
+			selector = new DBQueryExecutor(dbName, password);
+			displayedPatterns = new ArrayList<String>();
+		}
 
 	    public String getLemmaForWord(String word) {
 	        String lemma = "";

@@ -25,6 +25,7 @@ public class MerkorCommandLineOptions {
 	private static Option help_h;
 	private static Option bin_mapping;
 	private static Option extract_patterns;
+	private static Option merge_patterns;
 	
 	private static Option input;
 	private static Option output;
@@ -32,6 +33,7 @@ public class MerkorCommandLineOptions {
 	private static Option db_conn;
 	private static Option db_name;
 	private static Option password;
+	private static Option relation;
 	
 	
 	public static Options options = new Options();
@@ -48,9 +50,11 @@ public class MerkorCommandLineOptions {
 		options.addOption(output);
 		options.addOption(fill_db);
 		options.addOption(extract_patterns);
+		options.addOption(merge_patterns);
 		options.addOption(db_conn);
 		options.addOption(db_name);
 		options.addOption(password);
+		options.addOption(relation);
 
 	}
 
@@ -60,6 +64,7 @@ public class MerkorCommandLineOptions {
 		bin_mapping = new Option("bin_mapping", "call IceTagsBinMapping");
 		fill_db = new Option("fill_db", "populate database from file");
 		extract_patterns = new Option("extract_patterns", "extract np / pp patterns from file");
+		merge_patterns = new Option("merge_patterns", "merge patterns having same relation in the database");
 	}
 	private static void createArgumentOptions() {
 		input  = OptionBuilder.withArgName("input file or directory")
@@ -82,6 +87,10 @@ public class MerkorCommandLineOptions {
 			.hasArg()
 			.withDescription("password - no encryption!")
 			.create("password");
+		relation = OptionBuilder.withArgName("relation")
+		.hasArg()
+		.withDescription("relation to look for")
+		.create("relation");
 		
 	}
 

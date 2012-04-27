@@ -13,10 +13,10 @@ public class LevenshteinDistance {
 	private char[][] operationMatrix;
 	
 	// operations
-	private final char remove = 'R';
-	private final char insert = 'I';
-	private final char equal = 'E';
-	private final char unequal = 'U';
+	public final char remove = 'R';
+	public final char insert = 'I';
+	public final char equal = 'E';
+	public final char unequal = 'U';
 	
 	/**
 	 * Computes Levenshtein Distance of two strings based on chars.
@@ -76,6 +76,10 @@ public class LevenshteinDistance {
 
         // the last index is lev. dist.
         return distanceMatrix[sourceArr.length][targetArr.length];
+    }
+    
+    public char[][] getOperationMatrix() {
+    	return operationMatrix;
     }
     
     private String[] initializeArray (String str) {

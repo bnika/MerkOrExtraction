@@ -10,6 +10,7 @@ package is.merkor.cli;
 
 import is.merkor.patternextraction.PatternExtraction;
 import is.merkor.patternextraction.PatternInfo;
+import is.merkor.patternextraction.PatternMerger;
 import is.merkor.preprocessing.IceTagsBinTagsMapping;
 import is.merkor.util.FileCommunicatorWriting;
 import is.merkor.util.MerkorFile;
@@ -150,6 +151,17 @@ public class Main {
 			catch (Exception e) {
 				e.printStackTrace();
 			}
+			FileCommunicatorWriting.writeListNonAppend(output, patterns);
+		}
+		if (cmdLine.hasOption("merge_patterns")) {
+			String relation = cmdLine.getOptionValue("relation");
+			String passwd = cmdLine.getOptionValue("password");
+			
+			PatternMerger extr = new PatternMerger();
+			List<String> patterns = new ArrayList<String>();
+			
+			patterns = extr.process(relation, passwd);
+				
 			FileCommunicatorWriting.writeListNonAppend(output, patterns);
 		}
 		

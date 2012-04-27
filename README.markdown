@@ -129,3 +129,30 @@ After this work one can extract all classified patterns for further processing. 
 
 #### Merging patterns - edit distance
 
+All patterns classified as indicating some relation are merged using the Levenshtein edit distance measure.
+Example:
+
+    Original patterns:
+    [PP í  aþ [NP nxeþ ][NP nxee-ö ]]
+    [PP Í  aþ [NP nxeþ ][NP nxeeg ]]
+    Normalized patterns:
+    [pp í aþ [np nþ][np ne-s]]
+    [pp í aþ [np nþ][np neg]] 
+    Merged pattern:
+    [pp í  aþ [np nþ ][np ne-s|neg ]]
+
+If you have your patterns in a database, set the name of your database in is.merkor.patternextraction.PatternMerger#getPatternsWithRelation()  
+
+Then run:
+
+    java -jar MerkorExtraction.jar -merge_patterns -output <output_file> -relation <relation_of_patterns_to_merge> -password <your_db_passwd>
+
+Running this should show something like (results are written to <output_file>):
+
+    connected to database: patterns
+    --- merged 388 patterns for relation 'genitive'
+    --- nr. of merged patterns: 114
+
+This significantly reduces the number of patterns to handle in the relation extraction - further manual mergin using more
+complicated regular expressions was performed for MerkOr.  
+NOTE: It is though also possible to leave this step out completely, that way more exact data about reliability of single patterns can be collected later on.
