@@ -101,7 +101,8 @@ Example:
             [AdvP hingað aa AdvP]  
             ...  
 
-    Output: [NP nxeng ] [PP með  aþ [NP nxeþ  fexeþ ]] => [NP markmiðið nheng NP] [PP með aþ [NP komu nveþ sinni feveþ NP] PP]
+    Output: [NP nxeng ] [PP með  aþ [NP nxeþ  fexeþ ]] =>   
+    [NP markmiðið nheng NP] [PP með aþ [NP komu nveþ sinni feveþ NP] PP]
 
 The 'x' in the pattern stands for the gender tag which has been neutralized.
 
@@ -145,14 +146,21 @@ If you have your patterns in a database, set the name of your database in is.mer
 
 Then run:
 
-    java -jar MerkorExtraction.jar -merge_patterns -output <output_file> -relation <relation_of_patterns_to_merge> -password <your_db_passwd>
+    java -jar MerkorExtraction.jar -merge_patterns -output <output_file>  
+    -relation <relation_of_patterns_to_merge> -password <your_db_passwd>
 
-Running this should show something like (results are written to <output_file>):
+Running this should show something like (results are written to output_file):
 
     connected to database: patterns
     --- merged 388 patterns for relation 'genitive'
     --- nr. of merged patterns: 114
 
-This significantly reduces the number of patterns to handle in the relation extraction - further manual mergin using more
+This significantly reduces the number of patterns to handle in the relation extraction - additionally further manual mergin using more
 complicated regular expressions was performed for MerkOr.  
 NOTE: It is though also possible to leave this step out completely, that way more exact data about reliability of single patterns can be collected later on.
+
+## Relation Extraction
+
+### UIMA
+
+For the relation extraction a UIMA pipeline was implemented. See [Apache UIMA](http://uima.apache.org/). 

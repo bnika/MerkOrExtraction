@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<styleMap>
+<rule>
+<pattern>is.merkor.relationextraction.types.SemRelation</pattern>
+<label>SemRelation</label>
+<style>color:black; background:lightblue;</style>
+</rule>
+<rule>
+<pattern>is.merkor.relationextraction.types.PairWordPOS</pattern>
+<label>PairWordPOS</label>
+<style>color:black; background:lightgreen;</style>
+</rule>
+</styleMap>
+

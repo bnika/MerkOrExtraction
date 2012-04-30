@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>true</primitive>
+<annotatorImplementationName>is.merkor.relationextraction.annotators.RelationAnnotator</annotatorImplementationName>
+<analysisEngineMetaData>
+<name>Annotator to annotate relations by rules from a file</name>
+<description></description>
+<version>1.0</version>
+<vendor>Anna B. Nikulásdóttir</vendor>
+<configurationParameters/>
+<configurationParameterSettings/>
+<typeSystemDescription>
+<imports>
+<import location="MerkorTypeSystem.xml"/>
+</imports>
+</typeSystemDescription>
+<capabilities>
+<capability>
+<inputs>
+<type allAnnotatorFeatures="true">is.merkor.relationextraction.types.PairWordPOS</type>
+</inputs>
+<outputs>
+<type allAnnotatorFeatures="true">is.merkor.relationextraction.types.SemRelation</type>
+</outputs>
+<languagesSupported>
+<language>en</language>
+</languagesSupported>
+</capability>
+</capabilities>
+<operationalProperties>
+<modifiesCas>true</modifiesCas>
+<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+<outputsNewCASes>false</outputsNewCASes>
+</operationalProperties>
+</analysisEngineMetaData>
+<externalResourceDependencies>
+<externalResourceDependency>
+<key>ruleMapping</key>
+<description>Table of patterns and their rules.</description>
+<interfaceName>is.merkor.relationextraction.StringMapResource</interfaceName>
+<optional>false</optional>
+</externalResourceDependency>
+</externalResourceDependencies>
+<resourceManagerConfiguration>
+<externalResources>
+<externalResource>
+<name>RuleMappingFile</name>
+<description>Table of patterns and their rules.</description>
+<fileResourceSpecifier>
+<fileUrl>file:resources/is/merkor/relationextraction/ruleMapping.txt</fileUrl>
+</fileResourceSpecifier>
+<implementationName>is.merkor.relationextraction.StringMapResource_impl</implementationName>
+</externalResource>
+</externalResources>
+<externalResourceBindings>
+<externalResourceBinding>
+<key>ruleMapping</key>
+<resourceName>RuleMappingFile</resourceName>
+</externalResourceBinding>
+</externalResourceBindings>
+</resourceManagerConfiguration>
+</analysisEngineDescription>
+

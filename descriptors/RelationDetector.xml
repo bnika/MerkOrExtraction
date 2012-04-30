@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>false</primitive>
+<delegateAnalysisEngineSpecifiers>
+<delegateAnalysisEngine key="PairWordPOS">
+<import location="PairInOneDetector.xml"/>
+</delegateAnalysisEngine>
+<delegateAnalysisEngine key="SemRelation">
+<import location="RelationAnnotator.xml"/>
+</delegateAnalysisEngine>
+</delegateAnalysisEngineSpecifiers>
+<analysisEngineMetaData>
+<name>Relation Detector TAE</name>
+<description>Detects relations from an annotated input</description>
+<configurationParameters/>
+<configurationParameterSettings/>
+<flowConstraints>
+<fixedFlow>
+<node>PairWordPOS</node>
+<node>SemRelation</node>
+</fixedFlow>
+</flowConstraints>
+<capabilities>
+<capability>
+<inputs/>
+<outputs>
+<type allAnnotatorFeatures="true">is.merkor.relationextraction.types.SemRelation</type>
+<type allAnnotatorFeatures="true">is.merkor.relationextraction.types.PairWordPOS</type>
+</outputs>
+<languagesSupported>
+<language>en</language>
+</languagesSupported>
+</capability>
+</capabilities>
+<operationalProperties>
+<modifiesCas>true</modifiesCas>
+<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+<outputsNewCASes>false</outputsNewCASes>
+</operationalProperties>
+</analysisEngineMetaData>
+</analysisEngineDescription>

@@ -18,8 +18,8 @@ import java.awt.Color;
  * @author Anna B. Nikulasdottir
  */
 public class VerificationFrameTabbed extends javax.swing.JFrame {
-	// set your own password!
-    DBCommunicator communicator = new DBCommunicator("<password>");
+	// set your  db-password!
+    DBCommunicator communicator = new DBCommunicator("patterns", "<password>");
     List<PatternInfo> patternsToDisplay = new ArrayList<PatternInfo>();
     String relation = "";
     String patternToMatch = "";

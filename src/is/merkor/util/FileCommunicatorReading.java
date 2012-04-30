@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileCommunicatorReading {
 	
@@ -65,4 +67,30 @@ public class FileCommunicatorReading {
 		}
 		return stringList;
 	}
+	
+	/**
+	 * Reads the first two columns of a tab separated file into a map<String, String>.
+	 * The input file has to contain at least two columns separated by a <code>"\t"</code>
+	 * @param filename the filename of the input file
+	 * @return a map<String, String> containing the first two columns of the input file
+	 */
+	public static Map<String, String> getStringStringMapFromFile(String filename) {
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			BufferedReader in = createReader(filename);
+			String line = "";
+			String[] lineArr;
+			while ((line = in.readLine()) != null) {
+				lineArr = line.split("\t");
+				if (lineArr.length < 2) {
+					continue;
+				}
+				map.put(lineArr[0], lineArr[1]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return map;
+	}
+
 }

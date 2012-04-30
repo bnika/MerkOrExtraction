@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>true</primitive>
+<annotatorImplementationName>is.merkor.relationextraction.annotators.WordAnnotator</annotatorImplementationName>
+<analysisEngineMetaData>
+<name>WordAnnotator</name>
+<description>Annotates words output.</description>
+<version>1.0</version>
+<vendor>The Apache Software Foundation</vendor>
+<configurationParameters/>
+<configurationParameterSettings/>
+<typeSystemDescription>
+<imports>
+<import location="POSTagsTypeSystem.xml"/>
+</imports>
+</typeSystemDescription>
+<capabilities>
+<capability>
+<inputs/>
+<outputs>
+<type allAnnotatorFeatures="true">is.merkor.relationextraction.types.Word</type>
+</outputs>
+<languagesSupported>
+<language>en</language>
+</languagesSupported>
+</capability>
+</capabilities>
+<operationalProperties>
+<modifiesCas>true</modifiesCas>
+<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+<outputsNewCASes>false</outputsNewCASes>
+</operationalProperties>
+</analysisEngineMetaData>
+<externalResourceDependencies>
+<externalResourceDependency>
+<key>nonWordRegEx</key>
+<description>Non word regEx list.</description>
+<interfaceName>is.merkor.relationextraction.util.StringMapResource</interfaceName>
+<optional>false</optional>
+</externalResourceDependency>
+</externalResourceDependencies>
+<resourceManagerConfiguration>
+<externalResources>
+<externalResource>
+<name>NonWordRegExFile</name>
+<description>Non word RegEx.</description>
+<fileResourceSpecifier>
+<fileUrl>file:resources/is.merkor.relationextraction/nonWordRegEx.txt</fileUrl>
+</fileResourceSpecifier>
+<implementationName>is.merkor.relationextraction.util.StringMapResource_impl</implementationName>
+</externalResource>
+</externalResources>
+<externalResourceBindings>
+<externalResourceBinding>
+<key>nonWordRegEx</key>
+<resourceName>NonWordRegExFile</resourceName>
+</externalResourceBinding>
+</externalResourceBindings>
+</resourceManagerConfiguration>
+</analysisEngineDescription>
+

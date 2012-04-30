@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>true</primitive>
+<annotatorImplementationName>is.merkor.relationextraction.annotators.WordPOSAnnotator</annotatorImplementationName>
+<analysisEngineMetaData>
+<name>WordPOSAnnotator</name>
+<description>Annotates Words, POS-tags and Word-POS pairs from IceParser output.</description>
+<version>1.0</version>
+<vendor>The Apache Software Foundation</vendor>
+<configurationParameters/>
+<configurationParameterSettings/>
+<typeSystemDescription>
+<imports>
+<import location="MerkorTypeSystem.xml"/>
+</imports>
+</typeSystemDescription>
+<typePriorities/>
+<fsIndexCollection/>
+<capabilities>
+<capability>
+<inputs/>
+<outputs>
+<type allAnnotatorFeatures="true">is.merkor.relationextraction.types.Word</type>
+<type allAnnotatorFeatures="true">is.merkor.relationextraction.types.POS</type>
+<type allAnnotatorFeatures="true">is.merkor.relationextraction.types.PairWordPOS</type>
+</outputs>
+<languagesSupported>
+<language>en</language>
+</languagesSupported>
+</capability>
+</capabilities>
+<operationalProperties>
+<modifiesCas>true</modifiesCas>
+<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+<outputsNewCASes>false</outputsNewCASes>
+</operationalProperties>
+</analysisEngineMetaData>
+<externalResourceDependencies>
+<externalResourceDependency>
+<key>posTagMapping</key>
+<description>Table of pos tags and their word class.</description>
+<interfaceName>is.merkor.relationextraction.StringMapResource</interfaceName>
+<optional>false</optional>
+</externalResourceDependency>
+<externalResourceDependency>
+<key>nonWordRegEx</key>
+<description>Non word regEx list.</description>
+<interfaceName>is.merkor.relationextraction.StringMapResource</interfaceName>
+<optional>false</optional>
+</externalResourceDependency>
+</externalResourceDependencies>
+<resourceManagerConfiguration>
+<externalResources>
+<externalResource>
+<name>PosTagMappingFile</name>
+<description>A table containing pos tags and their word class.</description>
+<fileResourceSpecifier>
+<fileUrl>file:resources/is/merkor/relationextraction/posTagMapping.txt</fileUrl>
+</fileResourceSpecifier>
+<implementationName>is.merkor.relationextraction.StringMapResource_impl</implementationName>
+</externalResource>
+<externalResource>
+<name>NonWordRegExFile</name>
+<description>Non word RegEx.</description>
+<fileResourceSpecifier>
+<fileUrl>file:resources/is/merkor/relationextraction/nonWordRegEx.txt</fileUrl>
+</fileResourceSpecifier>
+<implementationName>is.merkor.relationextraction.StringMapResource_impl</implementationName>
+</externalResource>
+</externalResources>
+<externalResourceBindings>
+<externalResourceBinding>
+<key>posTagMapping</key>
+<resourceName>PosTagMappingFile</resourceName>
+</externalResourceBinding>
+<externalResourceBinding>
+<key>nonWordRegEx</key>
+<resourceName>NonWordRegExFile</resourceName>
+</externalResourceBinding>
+</externalResourceBindings>
+</resourceManagerConfiguration>
+</analysisEngineDescription>

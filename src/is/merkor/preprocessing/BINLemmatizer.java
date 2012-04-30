@@ -74,7 +74,11 @@ public class BINLemmatizer extends ProcessingClass {
 	}
 	
 	public String lemmatize (String word, String tag) {
-		return wordformLemmaMap.get(word + '_' + tag);
+		String lemma = wordformLemmaMap.get(word + '_' + tag);
+		if (null == lemma)
+			return "";
+		else
+			return lemma;
 	}
 	
 	private boolean isValidWordclass (String tag) {

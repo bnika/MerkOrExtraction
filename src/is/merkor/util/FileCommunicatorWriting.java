@@ -72,6 +72,7 @@ public class FileCommunicatorWriting {
 		}
 		
 	}
+	
 	public static void writeBufferToFileAppend(StringBuffer text, String filename) {
 		try {
 			BufferedWriter out = createWriter(filename, true);
@@ -85,6 +86,37 @@ public class FileCommunicatorWriting {
 	public static BufferedWriter createWriter (String filename, boolean append) throws IOException {
 		 return (new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename, append), "UTF8")));
 	}
+	
+	//// Methods from merkor.hg -> to refactor!!
+	
+	public static void writeRelation(String word1, String word2, String relation, String coveredText) {
+		//filter out some none valid words
+		if(word1.startsWith(".") || word2.startsWith("."))
+			return;
+		//set all relations including proper nouns to "proper"
+		//TODO: this is not good, also sets all words containing '-' to proper!!
+		if(coveredText.contains("-") || coveredText.matches(".*n\\S\\S\\Sgs"))
+			relation = "proper";
+		//no newlines wanted in the output coveredText
+		coveredText = coveredText.replaceAll("\n", " ");
+		try {
+			BufferedWriter out = createWriter("OrdasjodurResults/" + relation + ".csv", true);
+			//BufferedWriter out = createWriter("relationResults/" + relation + ".csv", true);
+			out.write(word1);
+			out.write("\t");
+			out.write(word2);
+			out.write("\t");
+			out.write(coveredText);
+			out.write("\n");
+			
+			out.close();
+			
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+	
+
 	
 }
 
