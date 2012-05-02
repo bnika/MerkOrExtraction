@@ -26,8 +26,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -62,14 +60,17 @@ import org.xml.sax.SAXException;
  */
 
 public class MerkorEngine implements Runnable {
+	private final int MAX_DOCUMENT_SIZE = 2000000;
 	private File taeDescriptor; //TextAnalysisEngineDescriptor
 	private File inputDir;
 	private String outputDir = "processed/";
 	private ResourceSpecifier specifier;
 	private AnalysisEngine analysisEngine;
 	private CAS cas;
+	
 	//if using threads:
-	private File currentFile;
+	private String currentFile;
+	private int file_length;
 	
 	public MerkorEngine() {
 //		// a default constructor
@@ -86,10 +87,11 @@ public class MerkorEngine implements Runnable {
 		this.taeDescriptor = new File(taeDescriptor);
 		this.inputDir = new File(inputDir);
 		//if using threads:
-		this.currentFile = new File(inputDir);
+		this.currentFile = inputDir;
 	}
+	
 	/**
-	 * Processes the input files according to the TextAnalysisEngineDescriptor
+	 * Processes the files in {@code inputDirectory} according to the TextAnalysisEngineDescriptor ({@code taeDescriptor}).
 	 */
 	public void process() {
 		if(!isInitialized()) {
@@ -100,10 +102,25 @@ public class MerkorEngine implements Runnable {
 			setResourceSpecifier();
 			createAnalysisEngine();
 			createCAS();
-			//if not using threads:
-			//processDirectory();
-			//if using threads:
-			processFile(currentFile);
+			processDirectory();
+			analysisEngine.destroy();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * Processes {@code currentFile} according to the TextAnalysisEngineDescriptor
+	 */
+	public void processThread() {
+		if(!isInitialized()) {
+			System.out.println("Couldn't process, MerkorSimpleEngine object is not initalized!");
+			return;
+		}
+		try {
+			setResourceSpecifier();
+			createAnalysisEngine();
+			createCAS();
+			processFile(currentFile, file_length);
 			analysisEngine.destroy();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,106 +145,107 @@ public class MerkorEngine implements Runnable {
 	private void createCAS() throws ResourceInitializationException {
 		cas = analysisEngine.newCAS();
 	}
+	
 	private void processDirectory() 
 		throws IOException, AnalysisEngineProcessException, SAXException {
-		// get all files in the input directory
+		
         File[] files = inputDir.listFiles();
         if (files == null) {
-          System.out.println("No files to process");
+        	System.out.println("No files to process");
         } 
         else {
-          // process documents
-          for (int i = 0; i < files.length; i++) {
-        	  cas.reset();
-            if (!files[i].isDirectory()) {
-            	if(!files[i].getName().startsWith(".")) {
-            		processFile(files[i]);
-            		System.out.println("processed file nr. " + i);
-            		writeAnnotationsForFile(files[i]);
-            	}
-            }
-          }
+        	for (int i = 0; i < files.length; i++) {
+        		cas.reset();
+        		if (!files[i].isDirectory()) {
+        			if(!files[i].getName().startsWith(".")) {
+        				processFile(files[i].getName(), (int)files[i].length());
+        				System.out.println("processed file nr. " + i);
+        				//writeAnnotationsForFile(files[i].getName() + "_" + i);
+        			}
+        		}
+        	}
         }
 	}
 	
-	/**
-	   * Processes a single file using this AnalysisEngine,
-	   * saving to this CAS
-	   * @param aFile file to process
-	   *          
-	   * 
-	   */
-	private void processFile(File aFile) throws IOException,
-    	AnalysisEngineProcessException, SAXException { //SAXException for thread test
-		
-		System.out.println("Processing file " + aFile.getName() + " size: " + aFile.length());
-		long start = System.currentTimeMillis();
-		  // convert file content to String - original
-	      String document = FileUtils.file2String(aFile);
-	      document = document.trim();
-		// put document text in CAS
-	      cas.setDocumentText(document);
-
-	      // process
-	      analysisEngine.process(cas);
-	      writeAnnotationsForFile(aFile);
-		  
-		  // REFACTORING: split file and work through piece-by-piece
-//		try {
-//		  BufferedReader in = FileCommunicatorReading.createReader(aFile.getName());
-//		  String line = "";
-//		  StringBuffer buffer = new StringBuffer(20000);
-//		  while ((line = in.readLine()) != null) {
-//			  if(buffer.length() < 20000) {
-//				  buffer.append(line);
-//			  }
-//			  else {
-//				  buffer.append(line);
-//			  
-//				  // put document text in CAS
-//				  cas.setDocumentText(buffer.toString());
-//
-//				  // process
-//				  analysisEngine.process(cas);
-//				  
-//				  buffer = new StringBuffer(20000);
-//			  }
-//			  
-//		  }
-//		} catch (IOException e) {
-//			
-//		}
-	      
-	      long end = System.currentTimeMillis();
-   		 System.out.println("total execution time for: " + aFile.getName() + ": " + (end - start));
-	}
-	/**
-	 * Writes the resulting annotations of the process to a file.
-	 * If processing large amount of data and not explicitly needing the .xmi output,
-	 * skip this method.
-	 * @param aFile
-	 * @throws SAXException
-	 * @throws IOException
+	/*
+	 * Processes a single file using this AnalysisEngine,
+	 * saving to this CAS
 	 */
-	private void writeAnnotationsForFile(File aFile) throws SAXException, IOException {
+	private void processFile (String filename, int length) throws IOException,
+    	AnalysisEngineProcessException, SAXException { //SAXException for thread test
+		int maxBuffer = MAX_DOCUMENT_SIZE;
+		System.out.println("Processing file " + inputDir + "/" + filename + " size: " + length);
+		if (length < MAX_DOCUMENT_SIZE)
+			maxBuffer = length;
+		long start = System.currentTimeMillis();
+		try {
+		  BufferedReader in = FileCommunicatorReading.createReader(inputDir + "/" + filename);
+		  String line = "";
+		  StringBuffer buffer = new StringBuffer(maxBuffer);
+		  int counter = 0;
+		  while ((line = in.readLine()) != null) {
+			  
+			  if(buffer.length() < maxBuffer) {
+				  buffer.append(line);
+				  buffer.append("\n");
+			  }
+			  else {
+				  buffer.append(line);
+				  buffer.append("\n");
+				  if (line.endsWith(".")) {
+					  processBuffer(buffer, filename, counter);
+					  buffer = new StringBuffer(maxBuffer);
+				  }
+			  }
+		  }
+		  counter++;
+		  processBuffer(buffer, filename, counter);
+		  
+		} catch (IOException e) {
+			
+		}
+	    long end = System.currentTimeMillis();
+   		System.out.println("total execution time for: " + filename + ": " + (end - start));
+	}
+	
+	private void processBuffer (StringBuffer buffer, String filename, int counter) throws IOException,
+	AnalysisEngineProcessException, SAXException {
+		cas.setDocumentText(buffer.toString());
+		// process
+		analysisEngine.process(cas);
+		
+		// for processing of large data and don't need the .xmi: skip
+		writeAnnotationsForFile(filename + "_" + counter);
+		
+		cas.reset();
+	}
+	/*
+	 * Writes the resulting annotations of the process to an .xmi file.
+	 * If processing large amount of data and not explicitly needing the .xmi output,
+	 * skip this method. The .xmi output is used as input for the UIMA Annotation Viewer,
+	 * as well as for further processing of the annotated data.
+	 */
+	private void writeAnnotationsForFile (String name) throws SAXException, IOException {
 	    BufferedOutputStream aStream = new BufferedOutputStream (new FileOutputStream
-	    		(outputDir + "annot_"+ aFile.getName() + ".xmi"));
+	    		(outputDir + "annot_"+ name + ".xmi"));
 	    XmlCasSerializer.serialize(cas, aStream);
 	}
 
 	private boolean descriptorExists() {
-		if(!taeDescriptor.exists()) {
+		if (!taeDescriptor.exists()) {
 			System.out.println(taeDescriptor.getName() + " does not exist!");
 			return false;
-		} else
+		} 
+		else
 			return true;
 	}
-	private boolean fileIsDirectory(File aFile, String message, boolean printMessageIfTrue) {
+	private boolean fileIsDirectory (File aFile, String message, boolean printMessageIfTrue) {
 		if(aFile.isDirectory()) {
 			if(printMessageIfTrue)
 				System.out.println(aFile.getName() + message);
 			return true;
-		} else {
+		} 
+		else {
 			if(!printMessageIfTrue)
 				System.out.println(aFile.getName() + message);
 			return false;
@@ -235,65 +253,9 @@ public class MerkorEngine implements Runnable {
 	}
 	
 	public void run() {
-		process();
+		processThread();
 		Thread.yield();
 	}
-	
-  /**
-   * Main program.
-   * 
-   * @param args
-   *          Command-line arguments - see class description
-   */
-  public static void main(String[] args) {
-	  long start = System.currentTimeMillis();
-	  MerkorEngine engine = new MerkorEngine();
-	  boolean validArgs = false;
-      // Read and validate command line arguments
-      if (args.length == 2) {
-    	  //if not using threads:
-    	//engine = new MerkorSimpleEngine(args[0], args[1]);
-    	  //validArgs = engine.isInitialized();
-    	  //if using threads:
-    	  File dir = new File(args[1]);
-    	  File[] files = dir.listFiles();
-          if (files == null) {
-            System.out.println("No files to process");
-          } 
-          else {
-            // process documents
-        	  ExecutorService exec = Executors.newFixedThreadPool(2);
-            for (int i = 0; i < files.length; i++) {
-              if (!files[i].isDirectory()) {
-              	if(!files[i].getName().startsWith(".")) {
-              		//if not using threads:
-              		//engine = new MerkorSimpleEngine(args[0], "testData/" + files[i].getName());
-              		//if using threads:
-              		exec.execute(new MerkorEngine(args[0], args[1] + files[i].getName()));
-              		System.out.println("processing file nr. " + i);
-              		//if not using threads:
-//              		validArgs = engine.isInitialized();
-//              		if (!validArgs) {
-//              	        printUsageMessage();
-//              	      } 
-//              	      else {
-              	    	 //engine.process(); 
-              	     // }
-              	}
-              }
-            }
-            long end = System.currentTimeMillis();
-            System.out.println("total execution time: " + (end - start));
-            exec.shutdown();
-          }
-      }
-      
-      
-  }
-  private static void printUsageMessage() {
-    System.err.println("Usage: java net.merkor.engine.MerkorSimpleEngine "
-            + "<Analysis Engine descriptor or PEAR file name> <input dir>");
-  }
 }
 
   

@@ -164,3 +164,47 @@ NOTE: It is though also possible to leave this step out completely, that way mor
 ### UIMA
 
 For the relation extraction a UIMA pipeline was implemented. See [Apache UIMA](http://uima.apache.org/). 
+The UIMA pipeline uses external <i>descriptors</i> that describe the annotation task for a given analysis process, and <i>resources</i> like for example
+the patterns generated in the last step. In the following the UIMA pipeline for relation extraction is described.
+
+#### Annotating words and part-of-speech tags
+
+UIMA is a framework that allows developers to define annotation tasks and provides for example a mechanism that defines start and end positions of the annotations in the text.  
+The first task is to annotate all valid word and pos-tags.
+Example:
+
+    ....  
+    [VP Eiga sfg3fn VP]  
+    [NP rúm nhfn 50% tp NP]  
+    [PP í aþ [NP Keflavíkurverktökumundirfyrirsögn nkeþ-m NP] PP]  
+    ...  
+
+In this text there are three Word objects (begin and end positions refer to a larger text):
+
+    Word ("Eiga"), begin = 227, end = 231, word_string = Eiga  
+    Word ("rúm"), begin = 247, end = 250, word_string = rúm  
+    Word ("í"), begin = 271, end = 272, word_string = í   
+
+The other two potential word objects, '50%' and 'Keflavíkurverktökumundirfyrirsögn', are not valid lexical items and hence are ignored.
+All POS-tags are analysed:
+
+    POS ("sfg3fn"), begin = 232, end = 238, word_class = verb, casus = "", TreeTaggerTag = VV  
+    POS ("nhfn"), begin = 251, end = 255, word_class = noun, casus = nominative, TreeTaggerTag = NNS  
+    POS ("tp"), begin = 260, end = 262, word_class = number, casus = "", TreeTaggerTag = CD  
+    POS ("aþ"), begin = 273, end = 275, word_class = adverb, casus = "", TreeTaggerTag = IN  
+    POS ("nkeþ-m"), begin = 314, end = 320, word_class = noun_proper, casus = dative, TreeTaggerTag = NP
+
+Note that a mapping to a common international tagset is included, here marked as 'TreeTaggerTag', referring to [TreeTagger](http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/).
+
+Every valid Word-POS pair is finally combined to a PairWordPOS object (in these examples no valid lemma was found for the words):
+
+    PairWordPOS ("Eiga sfg3fn"), begin = 227, end = 238, pos = POS ("sfg3fn"), word = Word ("Eiga"), lemma = null  
+    PairWordPOS ("rúm nhfn"), begin = 247, end = 255, pos = POS ("nhfn"), word = Word ("rúm"), lemma = null    
+    PairWordPOS ("í aþ"), begin = 271, end = 275, pos = POS ("aþ"), word = Word ("í"), lemma = null
+
+  
+The descriptor for this annotation task is <code>PairInOneDetector.xml</code> and necessary resource files are <code>nonWordRegEx.txt</code> and <code>posTagMapping.txt</code>.  To be able to view the annotations in the <i>UIMA Annotation Viewer</i> (found as a .launch file in UIMA run-configuration), <code>PairInOneDetectorStyleMap.xml</code> descriptor is also necessary. This annotation can of course be run on its own, but for MerkOr its main purpose is to prepare for relation extraction.  
+
+#### Annotating semantic relations
+
+The descriptor for the relation extraction is <code>RelationDetector</code> and the resource file containing the regular expressions for relation extraction is <code>ruleMapping.txt</code>. 
