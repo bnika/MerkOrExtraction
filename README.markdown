@@ -247,13 +247,13 @@ Relations are always binary, so patterns containing relations between more than 
 
 All extracted relations are to be stored in a database.  Running
 
-    java -jar MerkorExtraction -relations2dbstatements
+    java -jar MerkorExtraction.jar -relations2dbstatements
 
 results in a file <code>insertToLexRel.sql</code> containing sql insert statements for all relations from the relation extraction where both words were lemmatized and connected to an id from the BÍN database. The insert statements only contain ids - ids of lexical items and ids of relation types. The insert statement for the 'ýsa - steinbítur' example above would be (the relation type id for coordinated nouns is 7):
 
     INSERT INTO lex_relations_complete (rel_id, from_lex_unit, to_lex_unit) VALUES (7, 14811. 102562); 
 
-After the <code>lex\_relations\_complete</code> table has been created, the -fill\_db option for MerkorExtraction can be used to execute the insert statements._
+After the <code>lex\_relations\_complete</code> table has been created, the -fill\_db option for MerkorExtraction can be used to execute the insert statements.
 
     
 
