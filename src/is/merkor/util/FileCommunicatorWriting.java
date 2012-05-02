@@ -1,6 +1,7 @@
 package is.merkor.util;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -87,6 +88,13 @@ public class FileCommunicatorWriting {
 		 return (new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename, append), "UTF8")));
 	}
 	
+	public static void createDirIfNotExist (String dirName) {
+		File dir = new File(dirName);
+		if (!dir.exists() || !dir.isDirectory()) {
+			dir.mkdir();
+		}
+	}
+	
 	//// Methods from merkor.hg -> to refactor!!
 	
 	public static void writeRelation(String word1, String word2, String relation, String coveredText) {
@@ -95,12 +103,14 @@ public class FileCommunicatorWriting {
 			return;
 		//set all relations including proper nouns to "proper"
 		//TODO: this is not good, also sets all words containing '-' to proper!!
-		if(coveredText.contains("-") || coveredText.matches(".*n\\S\\S\\Sgs"))
-			relation = "proper";
+		// doesn't need - already set to proper in RelationInitializer!
+		//if(coveredText.contains("-") || coveredText.matches(".*n\\S\\S\\Sgs"))
+		//	relation = "proper";
 		//no newlines wanted in the output coveredText
 		coveredText = coveredText.replaceAll("\n", " ");
+		createDirIfNotExist("relationDetectorResults");
 		try {
-			BufferedWriter out = createWriter("OrdasjodurResults/" + relation + ".csv", true);
+			BufferedWriter out = createWriter("relationDetectorResults/" + relation + ".csv", true);
 			//BufferedWriter out = createWriter("relationResults/" + relation + ".csv", true);
 			out.write(word1);
 			out.write("\t");

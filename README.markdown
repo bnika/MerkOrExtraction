@@ -161,6 +161,8 @@ NOTE: It is though also possible to leave this step out completely, that way mor
 
 ## Relation Extraction
 
+Package <code>is.merkor.relationextraction</code>
+
 ### UIMA
 
 For the relation extraction a UIMA pipeline was implemented. See [Apache UIMA](http://uima.apache.org/). 
@@ -207,4 +209,43 @@ The descriptor for this annotation task is <code>PairInOneDetector.xml</code> an
 
 #### Annotating semantic relations
 
-The descriptor for the relation extraction is <code>RelationDetector</code> and the resource file containing the regular expressions for relation extraction is <code>ruleMapping.txt</code>. 
+The descriptor for the relation extraction is <code>RelationDetector.xml</code> and <code>RelationAnnotator.xml</code>, and the resource file containing the regular expressions for relation extraction is <code>ruleMapping.txt</code>. The files needed for the annotation of words and part-of-speech are also needed here, but the annotation process is included in the pipeline so the relation extraction is run directly on IceNLP parsed text.  
+An example for annotated relations:  
+
+    ...  
+    [SCP að c SCP]  
+    [NP breytingar nvfn NP]  
+    [PP á aþ [NP eignarhaldi nheþ NP] PP]  
+    [VP verði svg3en VP]  
+    ...
+
+The relation found in this text:
+
+    SemRelation("[NP breytingar nvfn NP] [PP á aþ [NP eignarhaldi nheþ NP] PP]")  
+    begin = 4923, end = 4984, relation = breytingar%áDat%eignarhaldi, word1 = breyting, word2 = eignarhald
+
+Since the relation annotator has access to the annotations of the word-pos annotator, it is possible to detect lemmata for the relations.
+
+#### Running annotators
+
+At the moment it is not possible to run the annotators from the command line (coming up!), they have to be run from <code>is.merkor.cli.MainAnnotators</code>.
+Running from Eclipse: set arguments in Run As -> Run Configurations ... as <code>descriptors/RelationDetector.xml directory-of-the-files-to-analyze</code>.  
+In the command line interface there will also be a flag option for the output: the output for the UIMA Annotation Viewer (or some other .xmi consuming program) is very large and can be commented out for large input. At the moment the call to the write-output method has to be commented out in <code>is.merkor.relationextraction.MerkorEngine#processBuffer</code>, comment out the line <code>writeAnnotationsForFile()</code>.  
+The results needed for further processing of MerkOr are written to a folder <code>relationDetectorResults</code>, each relation to its own file, e.g. <code>coordNouns.csv</code>. Note that the writing mode is appending - each run of the annotator appends to the already created relation files. An option to choose 'append' or 'overwrite' will be included in the command line interface when ready.
+
+The format of the result files, example from coordNouns.csv:
+
+    ýsa			steinbítur	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
+	steinbítur	ufsi	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
+	ýsa			ufsi	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
+
+Relations are always binary, so patterns containing relations between more than two words are splitted to the necessary number of binary relations. Each line contains the first word of the relation, the second word, and the realisation of the pattern it was extracted from, all tab-separated.  
+
+
+## Storing Relations in a database
+
+All extracted relations are stored in a database.
+
+    
+  
+ 

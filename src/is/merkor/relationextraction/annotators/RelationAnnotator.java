@@ -85,7 +85,7 @@ public class RelationAnnotator extends JCasAnnotator_ImplBase {
 	    	}
 	    	rules.clear();
 	    }
-	   // aJCas = relInitializer.setRelationWords(aJCas);
+	    aJCas = relInitializer.setRelationWords(aJCas);
 	    long endTime = System.currentTimeMillis();
 		System.out.println(endTime - startTime);
 	    

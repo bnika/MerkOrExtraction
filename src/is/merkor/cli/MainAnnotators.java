@@ -21,7 +21,7 @@ public class MainAnnotators {
 //        	for (int i = 0; i < files.length; i++) {
 //        		if (!files[i].isDirectory()) {
 //        			if(!files[i].getName().startsWith(".")) {
-//        				exec.execute(new MerkorEngine(args[0], args[1] + files[i].getName())); // why doesn't the thread version write an .xmi file?
+//        				exec.execute(new MerkorEngine(args[0], args[1] + files[i].getName()));
 //        				System.out.println("processing file nr. " + i);
 //        			}
 //        		}
