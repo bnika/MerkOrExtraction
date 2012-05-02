@@ -49,7 +49,7 @@ public class IceTagsTreeTaggerMapping {
 		ice2Tree = new RegExMap(tmpMap);
 	}
 	private void initializeLemmaList() {
-		lemmaList = FileCommunicatorReading.readListFromFile("lex_items.txt");
+		lemmaList = FileCommunicatorReading.readListFromFile("resources/lex_items.txt");
 	}
 	public String getTreeTag(String icetag) {
 		return ice2Tree.getRegExMatch(icetag);

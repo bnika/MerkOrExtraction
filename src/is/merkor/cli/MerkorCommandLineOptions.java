@@ -26,6 +26,7 @@ public class MerkorCommandLineOptions {
 	private static Option bin_mapping;
 	private static Option extract_patterns;
 	private static Option merge_patterns;
+	private static Option relations2dbstatements;
 	
 	private static Option input;
 	private static Option output;
@@ -51,6 +52,7 @@ public class MerkorCommandLineOptions {
 		options.addOption(fill_db);
 		options.addOption(extract_patterns);
 		options.addOption(merge_patterns);
+		options.addOption(relations2dbstatements);
 		options.addOption(db_conn);
 		options.addOption(db_name);
 		options.addOption(password);
@@ -65,6 +67,7 @@ public class MerkorCommandLineOptions {
 		fill_db = new Option("fill_db", "populate database from file");
 		extract_patterns = new Option("extract_patterns", "extract np / pp patterns from file");
 		merge_patterns = new Option("merge_patterns", "merge patterns having same relation in the database");
+		relations2dbstatements = new Option("relations2dbstatements", "create an .sql file with insert statements for files in relationDetectorResults/");
 	}
 	private static void createArgumentOptions() {
 		input  = OptionBuilder.withArgName("input file or directory")

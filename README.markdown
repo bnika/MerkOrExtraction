@@ -222,9 +222,10 @@ An example for annotated relations:
 The relation found in this text:
 
     SemRelation("[NP breytingar nvfn NP] [PP á aþ [NP eignarhaldi nheþ NP] PP]")  
-    begin = 4923, end = 4984, relation = breytingar%áDat%eignarhaldi, word1 = breyting, word2 = eignarhald
+    begin = 4923, end = 4984, relation = áDat, word1 = breyting_11402, word2 = eignarhald_427818
 
-Since the relation annotator has access to the annotations of the word-pos annotator, it is possible to detect lemmata for the relations.
+Since the relation annotator has access to the annotations of the word-pos annotator, it is possible to detect lemmata for the relations.  The numbers
+attached to the lemmata are the ids from the BIN database (see Preprocessing above).
 
 #### Running annotators
 
@@ -235,16 +236,26 @@ The results needed for further processing of MerkOr are written to a folder <cod
 
 The format of the result files, example from coordNouns.csv:
 
-    ýsa			steinbítur	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
-	steinbítur	ufsi	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
-	ýsa			ufsi	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
+    ýsa_14811		steinbítur_102562	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
+	steinbítur_102562	ufsi_7690	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
+	ýsa_14811		ufsi_7690	[NPs [NP ýsu nveþ NP] , , [NP ufsa nkeþ NP] [CP og c CP] [NP steinbít nkeþ NP] NPs]  
 
 Relations are always binary, so patterns containing relations between more than two words are splitted to the necessary number of binary relations. Each line contains the first word of the relation, the second word, and the realisation of the pattern it was extracted from, all tab-separated.  
 
 
 ## Storing Relations in a database
 
-All extracted relations are stored in a database.
+All extracted relations are to be stored in a database.  Running
+
+    java -jar MerkorExtraction -relations2dbstatements
+
+results in a file <code>insertToLexRel.sql</code> containing sql insert statements for all relations from the relation extraction where both words were lemmatized and connected to an id from the BÍN database. The insert statements only contain ids - ids of lexical items and ids of relation types. The insert statement for the 'ýsa - steinbítur' example above would be (the relation type id for coordinated nouns is 7):
+
+    INSERT INTO lex_relations_complete (rel_id, from_lex_unit, to_lex_unit) VALUES (7, 14811. 102562); 
+
+After the <code>lex\_relations\_complete</code> table has been created, the -fill\_db option for MerkorExtraction can be used to execute the insert statements._
+
+    
 
     
   

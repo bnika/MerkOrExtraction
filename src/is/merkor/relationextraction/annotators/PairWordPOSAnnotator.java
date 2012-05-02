@@ -51,7 +51,7 @@ public class PairWordPOSAnnotator extends JCasAnnotator_ImplBase {
 						PairWordPOS pair = new PairWordPOS(jCas, word.getBegin(), pos.getEnd(), word, pos);
 						//look for a lemma in BIN if it the pair represents a noun, an adjective or a verb
 						//String lemma = lemmatizer.getLemmaForPair(pair);
-						String lemma = lemmatizer.lemmatize(word.getCoveredText(), pos.getCoveredText());
+						String lemma = lemmatizer.lemmatize(word.getWord_string(), pos.getCoveredText());
 						if(!lemma.isEmpty()) {
 							pair.setLemma(lemma);
 							//lemmatizer.appendWord(lemma);

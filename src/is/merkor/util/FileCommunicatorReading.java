@@ -1,6 +1,7 @@
 package is.merkor.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -91,6 +92,18 @@ public class FileCommunicatorReading {
 			e.printStackTrace();
 		}
 		return map;
+	}
+
+	/**
+	 * Create an Array of files contained in a directory
+	 * 
+	 * @param directory the directory to extract files from
+	 * @return an Array of files in the parametar directory
+	 */
+	public static File[] getFileList (String directory) {
+		File dir = new File(directory);
+		File[] files = dir.listFiles();
+		return files;
 	}
 
 }

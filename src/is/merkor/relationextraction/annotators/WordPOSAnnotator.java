@@ -110,8 +110,9 @@ public class WordPOSAnnotator extends JCasAnnotator_ImplBase {
 				      pair.setLemma(lemma);
 					  //lemmatizer.appendWord(lemma);
 				  }
-				 else
+				 else {
 				     // lemmatizer.appendWord(currentWord.getWord_string());
+				 }
 				  pair.addToIndexes();
 				  currentWord = null;
 				  treeTags.collectStrudelFormatLines(pair);

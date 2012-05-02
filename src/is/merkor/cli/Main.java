@@ -12,10 +12,13 @@ import is.merkor.patternextraction.PatternExtraction;
 import is.merkor.patternextraction.PatternInfo;
 import is.merkor.patternextraction.PatternMerger;
 import is.merkor.preprocessing.IceTagsBinTagsMapping;
+import is.merkor.relationextraction.Relations2DBStatements;
+import is.merkor.util.FileCommunicatorReading;
 import is.merkor.util.FileCommunicatorWriting;
 import is.merkor.util.MerkorFile;
 import is.merkor.util.MerkorTokenReader;
 import is.merkor.util.database.DBPopulation;
+import is.merkor.util.database.datatypes.LexicalRelationType;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -29,7 +32,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 
 /**
- * A command line interface to the MerkOr Extraction package.
+ * A command line interface to the MerkOr Extraction package - work in progress version.
  * 
  * Run java -jar MerkOrExtraction.jar -help to see options available.
  * 
@@ -163,6 +166,24 @@ public class Main {
 			patterns = extr.process(relation, passwd);
 				
 			FileCommunicatorWriting.writeListNonAppend(output, patterns);
+		}
+		
+		if (cmdLine.hasOption("relations2dbstatements")) {
+			Relations2DBStatements lexReader = new Relations2DBStatements();
+			String directory = "../relationDetectorResults/";
+			
+			File[] fileList = FileCommunicatorReading.getFileList(directory);
+			
+			for (File file : fileList) {
+				String fName = file.getName();
+				String relation = fName.substring(0, fName.indexOf('.'));
+				int relId = LexicalRelationType.getTypeId(relation);
+				
+				if (relId > 0)
+					lexReader.processFile (directory + fName, relId);
+				else
+					System.out.println("no relId found for " + relation);
+			}	
 		}
 		
 		return results;
